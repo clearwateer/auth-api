@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 using Identity.Server.Data;
 using Identity.Server.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Identity.Server
 {
@@ -39,7 +32,8 @@ namespace Identity.Server
             .AddDefaultTokenProviders();
 
             services.AddIdentityServer()
-                    .AddDeveloperSigningCredential()
+                    .AddDeveloperSigningCredential(filename: "tempkey.rsa")
+                    .AddAspNetIdentity<ApplicationUser>()
                     .AddConfigurationStore(option =>
                            option.ConfigureDbContext = builder => builder.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"), options =>
                            options.MigrationsAssembly(migrationsAssembly)))
@@ -66,9 +60,23 @@ namespace Identity.Server
 
             app.UseHttpsRedirection();
 
-            app.UseMvc();
+            app.UseStaticFiles();
 
             app.UseIdentityServer();
+
+            app.UseCookiePolicy();
+
+            app.UseAuthentication();
+
+            app.UseCors(policy =>
+            {
+                policy.WithOrigins("http://localhost:8080");
+                policy.AllowAnyHeader();
+                policy.AllowAnyMethod();
+                policy.AllowCredentials();
+            });
+
+            app.UseMvc();
         }
     }
 }

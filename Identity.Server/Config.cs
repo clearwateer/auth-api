@@ -19,10 +19,10 @@ namespace Identity.Server
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResource {
-                Name = "role",
-                UserClaims = new List<string> {"role"}
-            }
+            //    new IdentityResource {
+            //    Name = "role",
+            //    UserClaims = new List<string> {"role"}
+            //}
             };
         }
 
@@ -53,25 +53,6 @@ namespace Identity.Server
         {
             return new List<Client>
             {
-                new Client
-                {
-                    ClientId = "ro.client",
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-                    AllowedScopes = {  IdentityServerConstants.StandardScopes.OpenId,
-                                       IdentityServerConstants.StandardScopes.Profile,
-                                       "api1", "role",
-                                    },
-                    Claims = new Claim[] // Assign const roles 
-                    {
-                        new Claim(JwtClaimTypes.Role, "admin"),
-                        new Claim(JwtClaimTypes.Role, "user")
-                    }
-                },
                 //new Client
                 //{
                 //    ClientId = "ro.client",
@@ -81,8 +62,29 @@ namespace Identity.Server
                 //    {
                 //        new Secret("secret".Sha256())
                 //    },
-                //    AllowedScopes = { "api1" }
+                //    AllowedScopes = {  IdentityServerConstants.StandardScopes.OpenId,
+                //                       IdentityServerConstants.StandardScopes.Profile,
+                //                       "api1", "role",
+                //                    },
+                //    Claims = new Claim[] // Assign const roles 
+                //    {
+                //        new Claim(JwtClaimTypes.Role, "admin"),
+                //        new Claim(JwtClaimTypes.Role, "user")
+                //    },
+                //    AllowAccessTokensViaBrowser = true
                 //},
+                new Client
+                {
+                    ClientId = "ro.client",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    AllowedScopes = { "api1" },
+                    AllowAccessTokensViaBrowser = true
+                },
 
                 //new Client
                 //{
